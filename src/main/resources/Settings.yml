@@ -1,0 +1,47 @@
+Settings:
+  Token: "OTEzMTE2Mzg3NDU3Nzg5OTcz.YZ5z5w.i-DXnjfztIhtGgt3eUdK3H1-7V8"
+  Name: "Vyrim"
+  Prefix: "+"
+  AutoReconnect: true
+  ServerIP: "play.yourserver.net"
+
+Activity:
+  Type: "DEFAULT"
+  Name: ""
+  URL: ""
+
+DefaultRole: ""
+MuteRole: ""
+
+WelcomeMessage:
+  Message: "Welcome %user-avatar%!"
+  ChannelID: ""
+  File: "background.png"
+  TextColor: "WHITE"
+  Avatar:
+    Width: 120
+    Height: 120
+    X: 800
+    Y: 400
+  Text:
+    1:
+      Font: "CooperBlack"
+      Size: 50
+      X: 800
+      Y: 800
+      Line: "WELCOME"
+    2:
+      Font: "CooperBlack"
+      Size: 40
+      X: 800
+      Y: 900
+      Line: "%user-tag%"
+
+# Here you will put the Long ID of the roles that will
+# have full access to the moderation commands (Ban, Kick, Mute).
+AdminRoles:
+  - ''
+# Here you will put the Long ID of the roles that will
+# have access to the Mute, kick, unmute commands.
+ModRoles:
+  - ''

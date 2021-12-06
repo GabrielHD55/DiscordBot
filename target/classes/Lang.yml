@@ -1,0 +1,51 @@
+BanDefaultReason: "Banned for bad behavior"
+Captcha:
+  Title: "**Complete the captcha**"
+  Color: "RED"
+  Description:
+    - "To enter the discord server,"
+    - "you must complete the captcha first!"
+  Footer:
+    Name: ""
+    URL: ""
+ServerStatus:
+  Online:
+    Title: "**Server Status**"
+    Color: "GREEN"
+    Description:
+      - ""
+    Footer:
+      Name: ""
+      URL: ""
+  Offline:
+    Title: "**Server Status**"
+    Color: "RED"
+    Description:
+      - ""
+    Footer:
+      Name: ""
+      URL: ""
+Whois:
+  Title: "**%user% Information**"
+  Color: "BLUE"
+  Description:
+    - " **Name:**       **Status:**       **Avatar:**"
+    - " %user%        %status%        %user-avatar%"
+    - ""
+    - " **Roles:** %roles%"
+    - ""
+    - " **Join Date:**      **Creation Date:**      **Last Connection:**"
+    - " %join-date%     %creation-date%       %last-date%"
+  Footer:
+    Name: ""
+    URL: ""
+Ban:
+  Title: "**%user% Banned**"
+  Color: "RED"
+  Description:
+    - ""
+    - "%user-avatar% was banned from the server by %admin-avatar%"
+    - ""
+  Footer:
+    Name: ""
+    URL: ""
