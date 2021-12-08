@@ -5,7 +5,10 @@ import com.mongodb.MongoClient;
 import com.vyrimbot.Commands.GeneralCmds;
 import com.vyrimbot.Commands.ModCmds;
 import com.vyrimbot.Listeners.AntiBot;
+import com.vyrimbot.Listeners.TicketListener;
+import com.vyrimbot.Managers.TicketManager;
 import com.vyrimbot.Utils.ConfigCreator;
+import com.vyrimbot.Utils.Giveaway;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -19,6 +22,8 @@ import org.simpleyaml.exceptions.InvalidConfigurationException;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends App {
 
@@ -26,11 +31,15 @@ public class Main extends App {
 
     @Getter private static String prefix;
     @Getter private static String botName;
+    @Getter private static TicketManager ticketManager;
 
     @Getter private JDA jda;
     @Getter private YamlFile lang;
     @Getter private YamlFile config;
+    @Getter private YamlFile tickets;
     @Getter private MongoClient mongoClient;
+
+    @Getter private List<Giveaway> giveaways;
 
     @Override
     public void onEnable() {
@@ -48,12 +57,16 @@ public class Main extends App {
             e.printStackTrace();
         }
 
+        ticketManager = new TicketManager();
+
         botName = config.getString("Settings.Name", "VyrimBot");
         prefix = config.getString("Settings.Prefix", "+");
 
         debug("INFO", "Starting "+botName+"...");
 
         connectBot();
+
+        giveaways = new ArrayList<>();
         //connectDatabase();
     }
 
@@ -64,10 +77,11 @@ public class Main extends App {
             if(!config.getString("Activity.Name").isEmpty()) {
                 jdaBuilder.setActivity(Activity.of(Activity.ActivityType.valueOf(config.getString("Activity.Type", "DEFAULT")), config.getString("Activity.Name"), config.getString("Activity.URL")));
             }
-            jdaBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS);
+            jdaBuilder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_EMOJIS);
             jdaBuilder.setChunkingFilter(ChunkingFilter.NONE);
             jdaBuilder.disableCache(CacheFlag.ACTIVITY);
-            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds());
+            jdaBuilder.setRawEventsEnabled(true);
+            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener());
 
             jda = jdaBuilder.build();
             jda.awaitReady();

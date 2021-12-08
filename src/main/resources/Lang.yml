@@ -3,73 +3,201 @@ MuteDefaultReason: ""
 KickDefaultReason: ""
 UnbannedMessage: "%user-avatar% **Unbanned correctly by** %admin-avatar%"
 UnmutedMessage: "%user-avatar% **Unmuted correctly by** %admin-avatar%"
-Captcha:
-  Title: "**Complete the captcha**"
-  Color: "RED"
-  Description:
-    - "To enter the discord server,"
-    - "you must complete the captcha first!"
-  Footer:
-    Name: ""
-    URL: ""
-ServerStatus:
-  Online:
-    Title: "**Server Status**"
-    Color: "GREEN"
+
+EmbedMessages:
+  Captcha:
+    Title: "**Complete the captcha**"
+    Color: "RED"
     Description:
-      - ""
+      - "To enter the discord server,"
+      - "you must complete the captcha first!"
     Footer:
       Name: ""
       URL: ""
-  Offline:
-    Title: "**Server Status**"
+  ServerStatus:
+    Online:
+      Title: "**Server Status**"
+      Color: "GREEN"
+      Description:
+        - ""
+      Footer:
+        Name: ""
+        URL: ""
+    Offline:
+      Title: "**Server Status**"
+      Color: "RED"
+      Description:
+        - ""
+      Footer:
+        Name: ""
+        URL: ""
+  Whois:
+    Title: "**%user% Information**"
+    Color: "BLUE"
+    Description:
+      - " **Name:**       **Status:**       **Avatar:**"
+      - " %user%        %status%        %user-avatar%"
+      - ""
+      - " **Roles:** %roles%"
+      - ""
+      - " **Join Date:**      **Creation Date:**      **Last Connection:**"
+      - " %join-date%     %creation-date%       %last-date%"
+    Footer:
+      Name: ""
+      URL: ""
+  Ban:
+    Title: "**%user% Banned**"
     Color: "RED"
     Description:
       - ""
+      - "%user-avatar% was banned from the server by %admin-avatar%"
+      - ""
     Footer:
       Name: ""
       URL: ""
-Whois:
-  Title: "**%user% Information**"
-  Color: "BLUE"
-  Description:
-    - " **Name:**       **Status:**       **Avatar:**"
-    - " %user%        %status%        %user-avatar%"
-    - ""
-    - " **Roles:** %roles%"
-    - ""
-    - " **Join Date:**      **Creation Date:**      **Last Connection:**"
-    - " %join-date%     %creation-date%       %last-date%"
-  Footer:
-    Name: ""
-    URL: ""
-Ban:
-  Title: "**%user% Banned**"
-  Color: "RED"
-  Description:
-    - ""
-    - "%user-avatar% was banned from the server by %admin-avatar%"
-    - ""
-  Footer:
-    Name: ""
-    URL: ""
-Mute:
-  Title: "**%user% Muted**"
-  Color: "RED"
-  Description:
-    - ""
-    - "%user-avatar% was muted from the server by %admin-avatar%"
-    - ""
-  Footer:
-    Name: ""
-    URL: ""
-Kick:
-  Title: "**%user% Kicked**"
-  Color: "RED"
-  Description:
-    - ""
-    - "%user-avatar% was kicked from the server by %admin-avatar%"
-    - ""
-  Footer:
-    Name: ""
-    URL: ""
+  Mute:
+    Title: "**%user% Muted**"
+    Color: "RED"
+    Description:
+      - ""
+      - "%user-avatar% was muted from the server by %admin-avatar%"
+      - ""
+    Footer:
+      Name: ""
+      URL: ""
+  Kick:
+    Title: "**%user% Kicked**"
+    Color: "RED"
+    Description:
+      - ""
+      - "%user-avatar% was kicked from the server by %admin-avatar%"
+      - ""
+    Footer:
+      Name: ""
+      URL: ""
+  Poll:
+    Color: "BLUE"
+    Options:
+      # Put the emojies unicode here
+      Emote_Y: "U+1F44D"
+      Emote_N: "U+1F44E"
+    Footer:
+      Name: ""
+      URL: ""
+  Giveaway:
+    Color: "BLUE"
+    Options:
+      # Put the emojies unicode here
+      Reaction-Emote: "U+1F44E"
+      Winner-Format: "%winner-amount% Winners!"
+      Expiration-Date: "Expires on: %expiration-date%"
+    Footer:
+      Name: ""
+      URL: ""
+
+Tickets:
+  TicketsMessage:
+    MessageID: 0
+    ChannelID: 0
+    EmbedMessage:
+      Title: "Select ticket"
+      Color: "BLUE"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - ":on:"
+        - ":loudspeaker: - To open a support ticket"
+        - ":octagonal_sign: - To open an appeal ticket"
+        - ":tools: - To open a bug report ticket"
+        - ":pencil: - To open a player report ticket"
+        - ":department_store: - To open a ticket related to store problems"
+        - ":incoming_envelope: - To open a staff application ticket"
+  GeneralSupport:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "Support-"
+    Button:
+      Emoji: "U+1F4E2"
+      Title: "General Support"
+    EmbedMessage:
+      Title: "General Support"
+      Color: "BLUE"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "You opened a support ticket, please explain what you need"
+        - ""
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"
+  BanAppeal:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "BanAppeal-"
+    Button:
+      Emoji: "U+1F6D1"
+      Title: "Ban Appeal"
+    EmbedMessage:
+      Title: "Ban Appeal"
+      Color: "GREEN"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "          :newspaper: Appeals format :newspaper:"
+        - ""
+        - "**To appeal you must copy and replace the data with yours in the following template:**"
+        - ""
+        - "» Your Nick: "
+        - "» Nick from the staff who sanctioned you: "
+        - "» Date of the sanction: "
+        - "» Briefly explain what happened: "
+        - ""
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"
+  BugReport:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "BugReport-"
+    Button:
+      Emoji: "U+1F6E0"
+      Title: "Bug Report"
+    EmbedMessage:
+      Title: "Bug Report"
+      Color: "RED"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"
+  PlayerReport:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "PlayerReport-"
+    Button:
+      Emoji: "U+1F4DD"
+      Title: "Player Report"
+    EmbedMessage:
+      Title: "Player Report"
+      Color: "YELLOW"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"
+  StoreIssues:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "StoreIssue-"
+    Button:
+      Emoji: "U+1F4B0"
+      Title: "Purchase Issue"
+    EmbedMessage:
+      Title: "Store Issues"
+      Color: "ORANGE"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"
+  StaffApplication:
+    CategoryID: 917779600837316638
+    ChannelPrefix: "StaffApplication-"
+    Button:
+      Emoji: "U+1F4E8"
+      Title: "Applications"
+    EmbedMessage:
+      Title: "Staff Applications"
+      Color: "CYAN"
+      Footer: "Bot developed by GabrielHD"
+      ImageUrl: ""
+      InstructionMessage:
+        - "If your problem has already been solved, react to the emoji :lock: to close this ticket"

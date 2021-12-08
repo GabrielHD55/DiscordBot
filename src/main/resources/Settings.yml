@@ -4,6 +4,7 @@ Settings:
   Prefix: "+"
   AutoReconnect: true
   ServerIP: "play.yourserver.net"
+  Captcha: false
 
 Activity:
   Type: "DEFAULT"

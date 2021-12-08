@@ -2,6 +2,7 @@ package com.vyrimbot.Commands;
 
 import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
+import com.vyrimbot.Utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -47,7 +48,7 @@ public class ModCmds extends ListenerAdapter {
             Member target = null;
             if(!event.getMessage().getMentionedMembers(event.getGuild()).isEmpty()) {
                 target = event.getMessage().getMentionedMembers(event.getGuild()).get(0);
-            } else if(isLong(args[1])) {
+            } else if(Utils.isLong(args[1])) {
                 target = event.getGuild().getMemberById(Long.parseLong(args[1]));
             } else if(!event.getGuild().getMembersByName(args[1], true).isEmpty()) {
                 target = event.getGuild().getMembersByName(args[1], true).get(0);
@@ -70,11 +71,11 @@ public class ModCmds extends ListenerAdapter {
                 }
 
                 EmbedBuilder embed = EmbedUtil.getEmbed(target.getUser());
-                embed.setTitle(lang.getString("Ban.Title").replace("%user%", target.getUser().getName()));
-                embed.setColor(Color.getColor(lang.getString("Ban.Color", "RED")));
+                embed.setTitle(lang.getString("EmbedMessages.Ban.Title").replace("%user%", target.getUser().getName()));
+                embed.setColor(Color.getColor(lang.getString("EmbedMessages.Ban.Color", "RED")));
 
                 StringBuilder description = new StringBuilder();
-                for(String s : lang.getStringList("Ban.Description")) {
+                for(String s : lang.getStringList("EmbedMessages.Ban.Description")) {
                     s = s.replaceAll("%reason%", reason);
                     s = s.replaceAll("%user%", target.getUser().getName());
                     s = s.replaceAll("%user-avatar%", target.getAsMention());
@@ -85,7 +86,7 @@ public class ModCmds extends ListenerAdapter {
                 }
                 embed.setDescription(description.toString());
                 embed.setImage(target.getAvatarUrl());
-                embed.setFooter(lang.getString("Ban.Footer.Name"), lang.getString("Ban.Footer.URL"));
+                embed.setFooter(lang.getString("EmbedMessages.Ban.Footer.Name"), lang.getString("EmbedMessages.Ban.Footer.URL"));
 
                 event.getGuild().ban(target, 1, reason).queue(success -> channel.sendMessageEmbeds(embed.build()).queue(), failure -> {
                     Message msg = channel.sendMessage("**This member could not be banned**").complete();
@@ -166,7 +167,7 @@ public class ModCmds extends ListenerAdapter {
             Member target = null;
             if(!event.getMessage().getMentionedMembers(event.getGuild()).isEmpty()) {
                 target = event.getMessage().getMentionedMembers(event.getGuild()).get(0);
-            } else if(isLong(args[1])) {
+            } else if(Utils.isLong(args[1])) {
                 target = event.getGuild().getMemberById(Long.parseLong(args[1]));
             } else if(!event.getGuild().getMembersByName(args[1], true).isEmpty()) {
                 target = event.getGuild().getMembersByName(args[1], true).get(0);
@@ -177,11 +178,11 @@ public class ModCmds extends ListenerAdapter {
                     return;
                 }
                 EmbedBuilder embed = EmbedUtil.getEmbed(target.getUser());
-                embed.setTitle(lang.getString("Mute.Title").replace("%user%", target.getUser().getName()));
-                embed.setColor(Color.getColor(lang.getString("Mute.Color", "RED")));
+                embed.setTitle(lang.getString("EmbedMessages.Mute.Title").replace("%user%", target.getUser().getName()));
+                embed.setColor(Color.getColor(lang.getString("EmbedMessages.Mute.Color", "RED")));
 
                 StringBuilder description = new StringBuilder();
-                for(String s : lang.getStringList("Mute.Description")) {
+                for(String s : lang.getStringList("EmbedMessages.Mute.Description")) {
                     s = s.replaceAll("%reason%", reason);
                     s = s.replaceAll("%user%", target.getUser().getName());
                     s = s.replaceAll("%user-avatar%", target.getAsMention());
@@ -192,7 +193,7 @@ public class ModCmds extends ListenerAdapter {
                 }
                 embed.setDescription(description.toString());
                 embed.setImage(target.getAvatarUrl());
-                embed.setFooter(lang.getString("Mute.Footer.Name"), lang.getString("Mute.Footer.URL"));
+                embed.setFooter(lang.getString("EmbedMessages.Mute.Footer.Name"), lang.getString("EmbedMessages.Mute.Footer.URL"));
 
                 channel.sendMessageEmbeds(embed.build()).queue();
 
@@ -218,7 +219,7 @@ public class ModCmds extends ListenerAdapter {
             Member target = null;
             if(!event.getMessage().getMentionedMembers(event.getGuild()).isEmpty()) {
                 target = event.getMessage().getMentionedMembers(event.getGuild()).get(0);
-            } else if(isLong(args[1])) {
+            } else if(Utils.isLong(args[1])) {
                 target = event.getGuild().getMemberById(Long.parseLong(args[1]));
             } else if(!event.getGuild().getMembersByName(args[1], true).isEmpty()) {
                 target = event.getGuild().getMembersByName(args[1], true).get(0);
@@ -269,7 +270,7 @@ public class ModCmds extends ListenerAdapter {
             Member target = null;
             if(!event.getMessage().getMentionedMembers(event.getGuild()).isEmpty()) {
                 target = event.getMessage().getMentionedMembers(event.getGuild()).get(0);
-            } else if(isLong(args[1])) {
+            } else if(Utils.isLong(args[1])) {
                 target = event.getGuild().getMemberById(Long.parseLong(args[1]));
             } else if(!event.getGuild().getMembersByName(args[1], true).isEmpty()) {
                 target = event.getGuild().getMembersByName(args[1], true).get(0);
@@ -278,11 +279,11 @@ public class ModCmds extends ListenerAdapter {
             if(target != null) {
                 if(!target.getUser().isBot()) {
                     EmbedBuilder embed = EmbedUtil.getEmbed(target.getUser());
-                    embed.setTitle(lang.getString("Kick.Title").replace("%user%", target.getUser().getName()));
-                    embed.setColor(Color.getColor(lang.getString("Kick.Color", "RED")));
+                    embed.setTitle(lang.getString("EmbedMessages.Kick.Title").replace("%user%", target.getUser().getName()));
+                    embed.setColor(Color.getColor(lang.getString("EmbedMessages.Kick.Color", "RED")));
 
                     StringBuilder description = new StringBuilder();
-                    for(String s : lang.getStringList("Kick.Description")) {
+                    for(String s : lang.getStringList("EmbedMessages.Kick.Description")) {
                         s = s.replaceAll("%reason%", reason);
                         s = s.replaceAll("%user%", target.getUser().getName());
                         s = s.replaceAll("%user-avatar%", target.getAsMention());
@@ -293,7 +294,7 @@ public class ModCmds extends ListenerAdapter {
                     }
                     embed.setDescription(description.toString());
                     embed.setImage(target.getAvatarUrl());
-                    embed.setFooter(lang.getString("Kick.Footer.Name"), lang.getString("Kick.Footer.URL"));
+                    embed.setFooter(lang.getString("EmbedMessages.Kick.Footer.Name"), lang.getString("EmbedMessages.Kick.Footer.URL"));
 
                     event.getGuild().kick(target, reason).queue(success -> channel.sendMessageEmbeds(embed.build()).queue(), failure -> {
                         Message msg = channel.sendMessage("**This member could not be kicked**").complete();
@@ -334,24 +335,6 @@ public class ModCmds extends ListenerAdapter {
             }
         }
         return false;
-    }
-
-    public boolean isLong(String s) {
-        try {
-            Long.parseLong(s);
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean isInt(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException ex) {
-            return false;
-        }
-        return true;
     }
 
     public boolean hasAdminRoles(Member member) {

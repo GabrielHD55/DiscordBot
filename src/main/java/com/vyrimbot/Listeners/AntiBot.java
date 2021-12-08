@@ -40,11 +40,11 @@ public class AntiBot extends ListenerAdapter {
             String captcha = Captcha.generateText();
 
             EmbedBuilder embed = EmbedUtil.getEmbed(user);
-            embed.setColor(Color.getColor(lang.getString("Captcha.Color", "RED")));
-            embed.setTitle(lang.getString("Captcha.Title"));
+            embed.setColor(Color.getColor(lang.getString("EmbedMessages.Captcha.Color", "RED")));
+            embed.setTitle(lang.getString("EmbedMessages.Captcha.Title"));
 
             StringBuilder description = new StringBuilder();
-            for(String s : lang.getStringList("Captcha.Description")) {
+            for(String s : lang.getStringList("EmbedMessages.Captcha.Description")) {
                 description.append(s).append("\n");
             }
 
