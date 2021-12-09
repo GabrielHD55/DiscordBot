@@ -23,13 +23,9 @@ public class GiveawayListener extends ListenerAdapter {
 		
 		if(giveaways.containsKey(mID)) {
 			Giveaway g = giveaways.get(mID);
-			
 			g.addUser(event.getUser().getAsMention());
-			
-			
 		}
 		return;
-		
 	}
 	
 	@Override

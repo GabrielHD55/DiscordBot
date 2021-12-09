@@ -98,6 +98,16 @@ EmbedMessages:
     Footer:
       Name: ""
       URL: ""
+  Suggestion:
+    Color: "BLUE"
+    Options:
+      # Put the emojies unicode here
+      LikeEmote: "U+1F44D"
+      DislikeEmote: "U+1F44E"
+    Footer:
+      Name: ""
+      URL: ""
+   
 
 Tickets:
   TicketsMessage:

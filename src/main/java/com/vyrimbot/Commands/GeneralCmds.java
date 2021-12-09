@@ -10,7 +10,9 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +33,88 @@ public class GeneralCmds extends ListenerAdapter {
         YamlFile config = Main.getInstance().getConfig();
         YamlFile lang = Main.getInstance().getLang();
 
+        if(message.startsWith(Main.getPrefix()+"editsuggestion")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+        	
+        	String[] args = StringUtils.substringsBetween(message, " \"", "\"");
+        	TextChannel c = event.getGuild().getTextChannelById(config.getString("SuggestionChannel"));
+        	
+        	if(args == null || args.length < 2) {
+        		event.getChannel().sendMessage("To edit your suggestion, type "+Main.getPrefix()+"editsuggestion [\"ID\"] [\"suggestion\"]").queue();
+        		return;
+        	}
+        	
+        	
+        	c.retrieveMessageById(args[0]).queue(m -> {
+        		
+        		MessageEmbed me = m.getEmbeds().toArray(new MessageEmbed[1])[0];
+        		if(EmbedUtil.getSuggestionAuthor(me.getTitle()).equalsIgnoreCase(event.getAuthor().getAsTag())) {
+        			
+        			EmbedBuilder e = EmbedUtil.getEmbed(event.getAuthor());
+        			
+        			e.setTitle(me.getTitle());
+        			e.setDescription(args[1]);
+        			e.setColor(Color.getColor(lang.getString("EmbedMessages.Suggestion.Color", "BLUE")));
+        			
+        			c.editMessageEmbedsById(args[0], e.build()).queue();
+        			event.getChannel().sendMessage("Succesfully edited! " + m.getJumpUrl()).queue();
+        			return;
+
+        		}else {
+        			event.getChannel().sendMessage("You can't edit this suggestion").queue();
+        			return;
+        		}
+        	}, failure -> {
+        		event.getChannel().sendMessage("Suggestion doesn't found").queue();
+    			return;
+        	});
+        	return;
+        }
+        
+        if(message.startsWith(Main.getPrefix()+"setsuggest")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+        	
+        	config.set("SuggestionChannel", event.getChannel().getId());
+        	event.getChannel().sendMessage("Setting suggest channel").queue();
+        	return;
+        }
+        if(message.startsWith(Main.getPrefix()+"suggest")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+        	
+        	if(config.getString("SuggestionChannel") == null) {
+        		event.getChannel().sendMessage("Suggest channel doesn't exist").queue();
+        		return;
+        	}
+        	
+        	TextChannel c = event.getGuild().getTextChannelById(config.getString("SuggestionChannel"));
+        	String arg = StringUtils.substringBetween(message, " \"", "\"");
+        	
+        	if(c == null) {
+        		event.getChannel().sendMessage("Suggest channel doesn't exist").queue();
+        		return;
+        	}
+        	
+        	if(arg == null) {
+        		event.getChannel().sendMessage("To suggest, type "+Main.getPrefix()+"suggest [\"suggestion\"]").queue();
+                return;
+        	}
+        	
+        	EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
+        	
+        	embed.setColor(Color.getColor(lang.getString("EmbedMessages.Suggestion.Color", "BLUE")));
+            embed.setDescription(arg);
+            
+            Message m = c.sendMessageEmbeds(embed.build()).complete();
+            
+            embed.setTitle(EmbedUtil.getSuggestionTitle(event.getAuthor().getAsTag(), m.getId()));
+            c.editMessageEmbedsById(m.getId(), embed.build()).queue();
+            
+            m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Suggestion.Options.LikeEmote")).getName()).queue();
+            m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Suggestion.Options.DislikeEmote")).getName()).queue();
+            
+            return;
+        }
+        
         if(message.startsWith(Main.getPrefix()+"gstart")) {
             event.getChannel().deleteMessageById(event.getMessageId()).queue();
 
@@ -54,7 +138,7 @@ public class GeneralCmds extends ListenerAdapter {
 
             embed.addField(lang.getString("EmbedMessages.Giveaway.Options.Expiration-Date").replace("%expiration-date%", Giveaway.getFormattedExpirationDate(args[4])), "", false);
 
-            embed.setFooter(lang.getString("Giveaway.Footer.Name"), lang.getString("Giveaway.Footer.URL"));
+            embed.setFooter(lang.getString("EmbedMessages.Giveaway.Footer.Name"), lang.getString("EmbedMessages.Giveaway.Footer.URL"));
 
             Message m = event.getChannel().sendMessageEmbeds(embed.build()).complete();
             m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Giveaway.Options.Reaction-Emote")).getName()).queue();

@@ -20,4 +20,13 @@ public class EmbedUtil {
     public static String getTag(User user) {
         return user.getName() + "#" + user.getDiscriminator();
     }
+    
+    public static String getSuggestionTitle(String author, String id) {
+        return  "#" + id + " " + author;
+    }
+    
+    public static String getSuggestionAuthor(String title) {
+    	String[] args = title.split(" ");
+    	return args[1];
+    }
 }
