@@ -13,6 +13,7 @@ Activity:
 
 DefaultRole: ""
 MuteRole: ""
+Giveaway: ""
 
 WelcomeMessage:
   Message: "Welcome %user-avatar%!"

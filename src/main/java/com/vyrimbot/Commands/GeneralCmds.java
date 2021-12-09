@@ -4,7 +4,7 @@ import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
-import com.vyrimbot.Utils.Giveaway;
+import com.vyrimbot.Giveaways.Giveaway;
 import com.vyrimbot.Utils.ServerStatus;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
@@ -19,6 +19,7 @@ import org.simpleyaml.configuration.file.YamlFile;
 
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class GeneralCmds extends ListenerAdapter {
 
@@ -30,15 +31,18 @@ public class GeneralCmds extends ListenerAdapter {
         YamlFile config = Main.getInstance().getConfig();
         YamlFile lang = Main.getInstance().getLang();
 
-        if(message.startsWith(Main.getPrefix()+"giveaway")) {
+        if(message.startsWith(Main.getPrefix()+"gstart")) {
             event.getChannel().deleteMessageById(event.getMessageId()).queue();
 
             String[] args = StringUtils.substringsBetween(message, " \"", "\"");
 
             EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
-
+            
+            if(!event.getMember().getRoles().contains(event.getGuild().getRoleById(Long.parseLong(config.getString("GiveawayRole"))))) {
+            	return;
+            }
             if(args == null || args.length < 5) {
-                event.getChannel().sendMessage("To create a giveaway, type "+Main.getPrefix()+"giveaway [\"title\"] [\"description\"] [\"prize\"] [\"winners\"] [\"expiration_date\"]\n 1 - 15 winners.\n date format example: 1w 2d 3h 4m 5s").queue();
+                event.getChannel().sendMessage("To create a giveaway, type "+Main.getPrefix()+"gstart [\"title\"] [\"description\"] [\"prize\"] [\"winners\"] [\"expiration_date\"]\n 1 - 15 winners.\n date format example: 1w 2d 3h 4m 5s").queue();
                 return;
             }
 
@@ -48,13 +52,57 @@ public class GeneralCmds extends ListenerAdapter {
 
             embed.addField(lang.getString("EmbedMessages.Giveaway.Options.Winner-Format").replace("%winner-amount%", args[3]), "", false);
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm:ss");
-            embed.addField(lang.getString("EmbedMessages.Giveaway.Options.Expiration-Date").replace("%expiration-date%", Giveaway.getExpirationDate(args[4]).format(formatter)), "", false);
+            embed.addField(lang.getString("EmbedMessages.Giveaway.Options.Expiration-Date").replace("%expiration-date%", Giveaway.getFormattedExpirationDate(args[4])), "", false);
 
-            //embed.setFooter(lang.getString("Giveaway.Footer.Name"), lang.getString("Giveaway.Footer.URL"));
+            embed.setFooter(lang.getString("Giveaway.Footer.Name"), lang.getString("Giveaway.Footer.URL"));
 
-            event.getChannel().sendMessageEmbeds(embed.build()).complete().addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Giveaway.Options.Reaction-Emote")).getName()).queue();
+            Message m = event.getChannel().sendMessageEmbeds(embed.build()).complete();
+            m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Giveaway.Options.Reaction-Emote")).getName()).queue();
+            
+            Giveaway giveaway = new Giveaway(m.getId(),event.getChannel(), args);
 
+
+        }
+        
+        if(message.startsWith(Main.getPrefix()+"glist")) {
+            event.getChannel().deleteMessageById(event.getMessageId()).queue();
+
+        	Map<String, Giveaway> giveaways = Main.getGiveawayManager().getGiveaways();
+        	
+        	if(giveaways.size() == 0) {
+        		event.getChannel().sendMessage(lang.getString("GiveawayNoExist")).queue();
+        		return;
+        	}
+        	
+        	for(Giveaway g : giveaways.values()) {
+        		String[] args = g.getArgs();
+        		event.getChannel().sendMessage(lang.getString("GiveawayList").replace("%id%", g.getMessageId()).replace("%title%", args[0]).replace("%prize%", args[2]).replace("%winners%", args[3]).replace("%expiration-date%", Giveaway.getFormattedExpirationDate(args[4]))).queue();
+        	}
+        	return;
+        }
+        
+        if(message.startsWith(Main.getPrefix()+"gend")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+        	
+        	String[] args = message.split(" ");
+        	
+        	if(!event.getMember().getRoles().contains(event.getGuild().getRoleById(Long.parseLong(config.getString("GiveawayRole"))))) {
+            	return;
+            }
+        	
+        	if(args.length == 0) {
+        		event.getChannel().sendMessage("To ends a giveaway, type "+Main.getPrefix()+"gend [messageId]").queue();
+        		return;
+        	}
+        	
+        	Giveaway g = Main.getGiveawayManager().getGiveaway(args[1]);
+        	
+        	if(g == null) {
+        		event.getChannel().sendMessage("Invalid messageID, type "+Main.getPrefix()+"glist to see current giveaways").queue();
+        		return;
+        	}
+        	
+        	g.endGiveaway();
         }
 
         if(message.startsWith(Main.getPrefix()+"poll"))
@@ -63,7 +111,7 @@ public class GeneralCmds extends ListenerAdapter {
 
             String[] args = StringUtils.substringsBetween(message, " \"", "\"");
 
-            String[] deffaultReactions = new String[] {"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"};
+            String[] deffaultReactions = new String[] {"1ï¸�âƒ£","2ï¸�âƒ£","3ï¸�âƒ£","4ï¸�âƒ£","5ï¸�âƒ£","6ï¸�âƒ£","7ï¸�âƒ£","8ï¸�âƒ£","9ï¸�âƒ£","ðŸ”Ÿ"};
 
             EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
 
@@ -195,4 +243,6 @@ public class GeneralCmds extends ListenerAdapter {
             event.getChannel().sendMessageEmbeds(embed.build()).queue();
         }
     }
+
+    
 }

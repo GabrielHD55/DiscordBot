@@ -3,6 +3,10 @@ MuteDefaultReason: ""
 KickDefaultReason: ""
 UnbannedMessage: "%user-avatar% **Unbanned correctly by** %admin-avatar%"
 UnmutedMessage: "%user-avatar% **Unmuted correctly by** %admin-avatar%"
+GiveawayWinners: "Congratulations to %winners% for won the %giveaway-title% giveaway!"
+GiveawayNoWinners: "Winners could not be determinated."
+GiveawayNoExist: "There are no giveaways."
+GiveawayList: "%id% %title% %prize% %winners% Winners, Expires on: %expiration-date%"
 
 EmbedMessages:
   Captcha:
