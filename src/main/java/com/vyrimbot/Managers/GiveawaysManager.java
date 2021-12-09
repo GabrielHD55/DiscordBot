@@ -1,17 +1,14 @@
 package com.vyrimbot.Managers;
 
-import java.sql.Date;
+import com.vyrimbot.Giveaways.Giveaway;
+import lombok.Getter;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoField;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.vyrimbot.Giveaways.Giveaway;
-
-import lombok.Getter;
 
 public class GiveawaysManager {
 
@@ -32,7 +29,6 @@ public class GiveawaysManager {
 		timer.schedule(task, Duration.between(LocalDateTime.now(), giveaway.getExpirationDate()).toMillis());
 		
 		tasks.put(giveaway.getMessageId(), task);
-				
 	}
 	
 	public void removeGiveaway(Giveaway giveaway) {

@@ -68,7 +68,7 @@ public class Giveaway {
 	public void endGiveaway() {
 		YamlFile lang = Main.getInstance().getLang();			
 		
-		String winners = "";
+		StringBuilder winners = new StringBuilder();
 		
 		for(int i = 0; i < winnersAmount; i++) {
 			String[] users = this.users.toArray(new String[this.users.toArray().length]);
@@ -79,12 +79,12 @@ public class Giveaway {
 				return;
 			}
 			
-			int r = new Random().nextInt(0, users.length);
+			int r = new Random().nextInt(users.length);
 			
-			winners = winners + users[r] + " ";
+			winners.append(users[r]).append(" ");
 			this.users.remove(r);
 		}
-		channel.sendMessage(lang.getString("GiveawayWinners").replace("%winners%", winners).replace("%giveaway-title%", args[0])).queue();
+		channel.sendMessage(lang.getString("GiveawayWinners").replace("%winners%", winners.toString()).replace("%giveaway-title%", args[0])).queue();
 		
 		Main.getGiveawayManager().removeGiveaway(this);
 	}

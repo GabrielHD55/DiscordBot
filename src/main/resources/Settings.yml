@@ -16,6 +16,7 @@ MuteRole: ""
 Giveaway: ""
 
 SuggestionChannel: ""
+LogsChannel: ""
 
 WelcomeMessage:
   Message: "Welcome %user-avatar%!"

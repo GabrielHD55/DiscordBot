@@ -10,7 +10,6 @@ import com.vyrimbot.Listeners.TicketListener;
 import com.vyrimbot.Managers.GiveawaysManager;
 import com.vyrimbot.Managers.TicketManager;
 import com.vyrimbot.Utils.ConfigCreator;
-import com.vyrimbot.Giveaways.Giveaway;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -24,8 +23,6 @@ import org.simpleyaml.exceptions.InvalidConfigurationException;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main extends App {
 
@@ -60,6 +57,7 @@ public class Main extends App {
         }
 
         ticketManager = new TicketManager();
+        giveawayManager = new GiveawaysManager();
 
         botName = config.getString("Settings.Name", "VyrimBot");
         prefix = config.getString("Settings.Prefix", "+");
@@ -67,8 +65,6 @@ public class Main extends App {
         debug("INFO", "Starting "+botName+"...");
 
         connectBot();
-
-        giveawayManager = new GiveawaysManager();
         //connectDatabase();
     }
 

@@ -1,8 +1,6 @@
 package com.vyrimbot.Listeners;
 
 import java.util.Map;
-import java.util.Random;
-import java.util.random.RandomGenerator;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,9 +21,9 @@ public class GiveawayListener extends ListenerAdapter {
 		
 		if(giveaways.containsKey(mID)) {
 			Giveaway g = giveaways.get(mID);
+			
 			g.addUser(event.getUser().getAsMention());
 		}
-		return;
 	}
 	
 	@Override
@@ -40,7 +38,5 @@ public class GiveawayListener extends ListenerAdapter {
 			
 			g.removeUser(event.getUser().getAsMention());
 		}
-		return;
-		
 	}
 }
