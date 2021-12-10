@@ -3,6 +3,7 @@ package com.vyrimbot.Commands;
 import com.vdurmont.emoji.EmojiManager;
 import com.vdurmont.emoji.EmojiParser;
 import com.vyrimbot.Giveaways.Giveaway;
+import com.vyrimbot.ReactionRoles.ReactionRole;
 import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
 import com.vyrimbot.Utils.ServerStatus;
@@ -17,6 +18,8 @@ import org.simpleyaml.configuration.file.YamlFile;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class GeneralCmds extends ListenerAdapter {
@@ -61,6 +64,37 @@ public class GeneralCmds extends ListenerAdapter {
             Giveaway giveaway = new Giveaway(m.getId(),event.getChannel(), args);
 
 
+        }
+        
+        if(message.startsWith(Main.getPrefix()+"reactroles")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+        	
+        	String[] args = StringUtils.substringsBetween(message, "\'", "\'");
+        	String d = StringUtils.substringBetween(message, "\"","\"");
+        	
+        	if(args == null || args.length == 0 || d == null) {
+                event.getChannel().sendMessage("To create a Reaction Role message, type "+Main.getPrefix()+"reactroles [\"description\"] [\'emoji1 role1\'] [\'emoji2 role2\'] ... ").queue();
+                return;
+            }
+        	
+        	List<String> emojies = new ArrayList();
+        	List<Role> roles = new ArrayList();
+        	
+        	event.getChannel().sendMessage(d).queue(current -> {
+        		
+        		for(String s : args) {
+            		String[] split = s.split(" ");
+            		
+            		emojies.add(split[0]);
+            		roles.add(event.getGuild().getRoleById(split[1]));
+            		
+            		current.addReaction(split[0]).queue();
+            	}
+        		
+        		ReactionRole rr = new ReactionRole(current.getId(), roles, emojies);
+        		
+        	});
+        	return;
         }
         
         if(message.startsWith(Main.getPrefix()+"glist")) {

@@ -93,7 +93,7 @@ public class ModCmds extends ListenerAdapter {
 
                 event.getGuild().ban(target, 1, reason).queue(success -> {
                     Main.getInstance().getDatabase().banUser(finalTarget, member, finalReason);
-                    
+
                     channel.sendMessageEmbeds(embed.build()).queue();
                 }, failure -> {
                     Message msg = channel.sendMessage("**This member could not be banned**").complete();
