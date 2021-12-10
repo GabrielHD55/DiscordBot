@@ -6,15 +6,11 @@ import com.vyrimbot.Tickets.TicketType;
 import com.vyrimbot.Utils.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.channel.text.TextChannelDeleteEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import org.jetbrains.annotations.NotNull;
@@ -119,27 +115,57 @@ public class TicketListener extends ListenerAdapter {
 
         YamlFile lang = Main.getInstance().getLang();
 
+        if(event.getComponent().getId().equalsIgnoreCase("closeticket")) {
+            Ticket ticket = Main.getTicketManager().getTicket(event.getTextChannel());
+            if(ticket != null) {
+                if(!ticket.getMember().equals(member) && !hasAdminRoles(member) && !hasModRoles(member)) {
+                    return;
+                }
+            }
+
+            Main.getTicketManager().deleteTicket(event.getTextChannel());
+
+            event.reply("**The ticket will be closed in 1 minute**").queue();
+            return;
+        }
+
         for(String sec : lang.getConfigurationSection("Tickets").getKeys(false)) {
             if (event.getComponent().getId().equalsIgnoreCase(sec)) {
                 Ticket ticket = Main.getTicketManager().getPlayerTicket(member, TicketType.getType(sec));
                 if(ticket != null) {
-                    InteractionHook message = event.reply("**You already have an open ticket!** "+ticket.getTextChannel().getAsMention()).setEphemeral(true).complete();
-
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(10000L);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        message.deleteOriginal().complete();
-                    }).start();
+                    event.reply("**You already have an open ticket!** "+ticket.getTextChannel().getAsMention()).setEphemeral(true).complete();
                     return;
                 }
 
                 Main.getTicketManager().createNewTicket(member, TicketType.getType(sec));
+
+                ticket = Main.getTicketManager().getPlayerTicket(member, TicketType.getType(sec));
+
+                event.reply("Ticket created successfully! "+ticket.getTextChannel().getAsMention()).setEphemeral(true).queue();
                 return;
             }
         }
+    }
+
+    public boolean hasAdminRoles(Member member) {
+        YamlFile config = Main.getInstance().getConfig();
+
+        for(Role role : member.getRoles()) {
+            if(config.getStringList("AdminRoles").contains(String.valueOf(role.getIdLong()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasModRoles(Member member) {
+        YamlFile config = Main.getInstance().getConfig();
+
+        for(Role role : member.getRoles()) {
+            if(config.getStringList("ModRoles").contains(String.valueOf(role.getIdLong()))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

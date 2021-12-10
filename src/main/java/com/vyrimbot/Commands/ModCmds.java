@@ -88,7 +88,14 @@ public class ModCmds extends ListenerAdapter {
                 embed.setImage(target.getAvatarUrl());
                 embed.setFooter(lang.getString("EmbedMessages.Ban.Footer.Name"), lang.getString("EmbedMessages.Ban.Footer.URL"));
 
-                event.getGuild().ban(target, 1, reason).queue(success -> channel.sendMessageEmbeds(embed.build()).queue(), failure -> {
+                Member finalTarget = target;
+                String finalReason = reason;
+
+                event.getGuild().ban(target, 1, reason).queue(success -> {
+                    Main.getInstance().getDatabase().banUser(finalTarget, member, finalReason);
+                    
+                    channel.sendMessageEmbeds(embed.build()).queue();
+                }, failure -> {
                     Message msg = channel.sendMessage("**This member could not be banned**").complete();
 
                     new Thread(() -> {

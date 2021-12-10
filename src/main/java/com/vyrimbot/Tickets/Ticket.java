@@ -4,11 +4,14 @@ import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Category;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.awt.*;
+import java.io.IOException;
 
 public class Ticket {
 
@@ -27,7 +30,27 @@ public class Ticket {
         if (this.textChannel == null) {
             YamlFile lang = Main.getInstance().getLang();
 
-            this.textChannel = Main.getInstance().getJda().getCategoryById(lang.getLong("Tickets." + type.name() + ".CategoryID")).createTextChannel(lang.getString("Settings." + type.name() + ".ChannelPrefix") + member.getUser().getName()).complete();
+            Category category = Main.getInstance().getJda().getCategoryById(lang.getLong("Tickets." + type.name() + ".CategoryID"));
+            if(category == null) {
+                if(!Main.getInstance().getJda().getCategoriesByName("Tickets", true).isEmpty()) {
+                    category = Main.getInstance().getJda().getCategoriesByName("Tickets", true).get(0);
+                } else {
+                    category = member.getGuild().createCategory("Tickets").complete();
+                }
+
+                Category finalCategory = category;
+                new Thread(() -> {
+                    lang.set("Tickets." + type.name() + ".CategoryID", finalCategory.getIdLong());
+
+                    try {
+                        lang.save();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+            }
+
+            this.textChannel = category.createTextChannel(lang.getString("Tickets." + type.name() + ".ChannelPrefix") + member.getUser().getName()).complete();
 
             if (this.textChannel.getPermissionOverride(member) == null) {
                 this.textChannel.createPermissionOverride(member).setAllow(
@@ -58,7 +81,7 @@ public class Ticket {
             instrutions.setDescription(description.toString());
 
             this.textChannel.sendMessage(member.getAsMention()).queue();
-            this.textChannel.sendMessage(instrutions.build()).complete().addReaction("\uD83D\uDD12").queue();
+            this.textChannel.sendMessage(instrutions.build()).setActionRow(Button.danger("closeticket", "\uD83D\uDD12 Close ticket")).queue();
 
         }
     }

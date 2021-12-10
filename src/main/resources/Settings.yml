@@ -1,5 +1,5 @@
 Settings:
-  Token: "OTEzMTE2Mzg3NDU3Nzg5OTcz.YZ5z5w.i-DXnjfztIhtGgt3eUdK3H1-7V8"
+  Token: ""
   Name: "Vyrim"
   Prefix: "+"
   AutoReconnect: true
@@ -14,6 +14,13 @@ Activity:
 DefaultRole: ""
 MuteRole: ""
 Giveaway: ""
+
+Database:
+  Host: "localhost"
+  Port: 27017
+  DBName: "VyrimBot"
+  Username: ""
+  Password: ""
 
 SuggestionChannel: ""
 LogsChannel: ""

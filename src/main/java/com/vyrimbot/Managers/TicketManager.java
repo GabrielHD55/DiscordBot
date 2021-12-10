@@ -50,10 +50,8 @@ public class TicketManager {
         CloseTask closeTask;
         if (ticket != null) {
             closeTask = new CloseTask(ticket);
-
         } else {
             closeTask = new CloseTask(textChannel);
-
         }
         this.closeTickets.put(textChannel.getIdLong(), closeTask);
     }
@@ -61,6 +59,7 @@ public class TicketManager {
     public void delete(TextChannel textChannel) {
         this.closeTickets.remove(textChannel.getIdLong());
         this.tickets.remove(textChannel.getIdLong());
+
         textChannel.delete().queue();
     }
 }

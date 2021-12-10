@@ -2,8 +2,10 @@ package com.vyrimbot;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
+import com.mongodb.client.MongoDatabase;
 import com.vyrimbot.Commands.GeneralCmds;
 import com.vyrimbot.Commands.ModCmds;
+import com.vyrimbot.Database.Database;
 import com.vyrimbot.Listeners.AntiBot;
 import com.vyrimbot.Listeners.GiveawayListener;
 import com.vyrimbot.Listeners.TicketListener;
@@ -23,6 +25,7 @@ import org.simpleyaml.exceptions.InvalidConfigurationException;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.time.ZoneId;
 
 public class Main extends App {
 
@@ -33,10 +36,11 @@ public class Main extends App {
     @Getter private static TicketManager ticketManager;
 
     @Getter private JDA jda;
+    @Getter private ZoneId zoneId;
     @Getter private YamlFile lang;
     @Getter private YamlFile config;
     @Getter private YamlFile tickets;
-    @Getter private MongoClient mongoClient;
+    @Getter private Database database;
 
     @Getter private static GiveawaysManager giveawayManager;
 
@@ -65,12 +69,21 @@ public class Main extends App {
         debug("INFO", "Starting "+botName+"...");
 
         connectBot();
-        //connectDatabase();
+        //database = new Database();
     }
 
     public void connectBot() {
+        String token = config.getString("Settings.Token");
+
+        if(token == null || token.isEmpty()) {
+            debug("ERROR", "Please set the token in the configuration!");
+
+            System.exit(0);
+            return;
+        }
+
         try {
-            JDABuilder jdaBuilder = JDABuilder.createDefault(config.getString("Settings.Token"));
+            JDABuilder jdaBuilder = JDABuilder.createDefault(token);
             jdaBuilder.setAutoReconnect(config.getBoolean("Settings.AutoReconnect", true));
             if(!config.getString("Activity.Name").isEmpty()) {
                 jdaBuilder.setActivity(Activity.of(Activity.ActivityType.valueOf(config.getString("Activity.Type", "DEFAULT")), config.getString("Activity.Name"), config.getString("Activity.URL")));
@@ -87,11 +100,6 @@ public class Main extends App {
             debug("ERROR", e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    public void connectDatabase() {
-        mongoClient = new MongoClient(config.getString("Database.Host", "localhost"), config.getInt("Database.Port", 27017));
-        DB database = mongoClient.getDB(config.getString("Database.DBName", "VyrimBot"));
     }
 
     public static void debug(String type, String message) {
