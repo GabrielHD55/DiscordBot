@@ -18,6 +18,15 @@ Giveaway: ""
 SuggestionChannel: ""
 LogsChannel: ""
 
+ReactionRoles:
+  ChannelID: ""
+  Messages:
+  # You can add as many as you want
+    Example:
+      Description: ":smiley: Are you a member?"
+      ReactionRoles:
+        - "U+1F600 917850007221186670"
+
 WelcomeMessage:
   Message: "Welcome %user-avatar%!"
   ChannelID: ""

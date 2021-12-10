@@ -6,9 +6,12 @@ import com.vyrimbot.Commands.GeneralCmds;
 import com.vyrimbot.Commands.ModCmds;
 import com.vyrimbot.Listeners.AntiBot;
 import com.vyrimbot.Listeners.GiveawayListener;
+import com.vyrimbot.Listeners.ReactionRoleListener;
 import com.vyrimbot.Listeners.TicketListener;
 import com.vyrimbot.Managers.GiveawaysManager;
+import com.vyrimbot.Managers.ReactionRoleManager;
 import com.vyrimbot.Managers.TicketManager;
+import com.vyrimbot.ReactionRoles.ReactionRole;
 import com.vyrimbot.Utils.ConfigCreator;
 import lombok.Getter;
 import net.dv8tion.jda.api.JDA;
@@ -23,6 +26,8 @@ import org.simpleyaml.exceptions.InvalidConfigurationException;
 import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main extends App {
 
@@ -39,6 +44,7 @@ public class Main extends App {
     @Getter private MongoClient mongoClient;
 
     @Getter private static GiveawaysManager giveawayManager;
+    @Getter private static ReactionRoleManager rrManager;
 
     @Override
     public void onEnable() {
@@ -65,6 +71,8 @@ public class Main extends App {
         debug("INFO", "Starting "+botName+"...");
 
         connectBot();
+        
+        rrManager = new ReactionRoleManager();
         //connectDatabase();
     }
 
@@ -79,7 +87,7 @@ public class Main extends App {
             jdaBuilder.setChunkingFilter(ChunkingFilter.NONE);
             jdaBuilder.disableCache(CacheFlag.ACTIVITY);
             jdaBuilder.setRawEventsEnabled(true);
-            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener());
+            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener(), new ReactionRoleListener());
 
             jda = jdaBuilder.build();
             jda.awaitReady();
