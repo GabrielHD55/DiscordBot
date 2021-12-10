@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Database {
@@ -32,11 +31,76 @@ public class Database {
         database = mongoClient.getDB(config.getString("Database.DBName", "VyrimBot"));
 
         if(database.getCollection("Bans") == null) database.createCollection("Bans", null);
-        if(database.getCollection("Kicks") == null) database.createCollection("Kicks", null);
-        if(database.getCollection("Mutes") == null) database.createCollection("Mutes", null);
+        if(database.getCollection("Invites") == null) database.createCollection("Invites", null);
         if(database.getCollection("Tickets") == null) database.createCollection("Tickets", null);
+        if(database.getCollection("Infractions") == null) database.createCollection("Infractions", null);
 
         loadTickets();
+    }
+
+    public void saveInvite(Member member, String url) {
+        DBCollection collection = database.getCollection("Invites");
+        BasicDBObject query = new BasicDBObject();
+        query.put("user", member.getIdLong());
+
+        BasicDBObject newDocument = new BasicDBObject();
+        newDocument.put("url", url);
+
+        BasicDBObject updateObject = new BasicDBObject();
+        updateObject.put("$set", newDocument);
+
+        collection.update(query, updateObject);
+    }
+
+    public String getInvite(Member member) {
+        DBCollection collection = database.getCollection("Invites");
+
+        if(hasInvite(member)) {
+            BasicDBObject searchQuery = new BasicDBObject();
+            searchQuery.put("user", member.getIdLong());
+            DBCursor cursor = collection.find(searchQuery);
+
+            if (cursor.hasNext()) {
+                DBObject document = cursor.next();
+
+                return (String) document.get("url");
+            }
+        }
+
+        BasicDBObject document = new BasicDBObject();
+        document.put("guild", member.getGuild().getIdLong());
+        document.put("user", member.getUser().getIdLong());
+        document.put("url", "none");
+
+        collection.insert(document);
+
+        return null;
+    }
+
+    public boolean hasInvite(Member member) {
+        DBCollection collection = database.getCollection("Invites");
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("user", member.getIdLong());
+        DBCursor cursor = collection.find(searchQuery);
+
+        while (cursor.hasNext()) {
+            DBObject document = cursor.next();
+
+            return !String.valueOf(document.get("url")).equalsIgnoreCase("none");
+        }
+
+        return false;
+    }
+
+    public void unbanUser(long idLong, Member admin) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+
+        DBCollection collection = database.getCollection("Bans");
+        BasicDBObject query = new BasicDBObject();
+        query.put("user", idLong);
+
+        collection.remove(query);
     }
 
     public void banUser(Member member, Member admin, String reason) {
@@ -49,7 +113,6 @@ public class Database {
         document.put("guild", member.getGuild().getIdLong());
         document.put("user", member.getUser().getIdLong());
         document.put("admin", admin.getUser().getIdLong());
-        document.put("unbanned", false);
         document.put("reason", reason);
 
         collection.insert(document);

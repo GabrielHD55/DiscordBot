@@ -8,6 +8,7 @@ import com.vyrimbot.Listeners.GiveawayListener;
 import com.vyrimbot.Listeners.ReactionRoleListener;
 import com.vyrimbot.Listeners.TicketListener;
 import com.vyrimbot.Managers.GiveawaysManager;
+import com.vyrimbot.Managers.LogsManager;
 import com.vyrimbot.Managers.ReactionRoleManager;
 import com.vyrimbot.Managers.TicketManager;
 import com.vyrimbot.Utils.ConfigCreator;
@@ -32,7 +33,6 @@ public class Main extends App {
 
     @Getter private static String prefix;
     @Getter private static String botName;
-    @Getter private static TicketManager ticketManager;
 
     @Getter private JDA jda;
     @Getter private ZoneId zoneId;
@@ -41,6 +41,8 @@ public class Main extends App {
     @Getter private YamlFile tickets;
     @Getter private Database database;
 
+    @Getter private static LogsManager logsManager;
+    @Getter private static TicketManager ticketManager;
     @Getter private static GiveawaysManager giveawayManager;
     @Getter private static ReactionRoleManager rrManager;
 
@@ -69,7 +71,7 @@ public class Main extends App {
         debug("INFO", "Starting "+botName+"...");
 
         connectBot();
-        //database = new Database();
+        database = new Database();
         
         rrManager = new ReactionRoleManager();
         //connectDatabase();

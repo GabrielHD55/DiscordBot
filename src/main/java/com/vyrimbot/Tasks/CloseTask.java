@@ -36,7 +36,7 @@ public class CloseTask extends TimerTask {
     @Override
     public void run() {
         if (this.ticket != null) {
-
+            Main.getInstance().getDatabase().deleteTicket(this.ticket);
         }
 
         Main.getTicketManager().delete(this.textChannel);

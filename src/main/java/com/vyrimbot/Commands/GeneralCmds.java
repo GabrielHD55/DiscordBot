@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class GeneralCmds extends ListenerAdapter {
 
@@ -69,16 +70,16 @@ public class GeneralCmds extends ListenerAdapter {
         if(message.startsWith(Main.getPrefix()+"reactroles")) {
         	event.getChannel().deleteMessageById(event.getMessageId()).queue();
         	
-        	String[] args = StringUtils.substringsBetween(message, "\'", "\'");
+        	String[] args = StringUtils.substringsBetween(message, "'", "'");
         	String d = StringUtils.substringBetween(message, "\"","\"");
         	
         	if(args == null || args.length == 0 || d == null) {
-                event.getChannel().sendMessage("To create a Reaction Role message, type "+Main.getPrefix()+"reactroles [\"description\"] [\'emoji1 role1\'] [\'emoji2 role2\'] ... ").queue();
+                event.getChannel().sendMessage("To create a Reaction Role message, type "+Main.getPrefix()+ "reactroles [\"description\"] ['emoji1 role1'] ['emoji2 role2'] ... ").queue();
                 return;
             }
         	
-        	List<String> emojies = new ArrayList();
-        	List<Role> roles = new ArrayList();
+        	List<String> emojies = new ArrayList<>();
+        	List<Role> roles = new ArrayList<>();
         	
         	event.getChannel().sendMessage(d).queue(current -> {
         		
@@ -143,7 +144,7 @@ public class GeneralCmds extends ListenerAdapter {
 
             String[] args = StringUtils.substringsBetween(message, " \"", "\"");
 
-            String[] deffaultReactions = new String[] {"1ï¸�âƒ£","2ï¸�âƒ£","3ï¸�âƒ£","4ï¸�âƒ£","5ï¸�âƒ£","6ï¸�âƒ£","7ï¸�âƒ£","8ï¸�âƒ£","9ï¸�âƒ£","ðŸ”Ÿ"};
+            String[] deffaultReactions = new String[] {"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"};
 
             EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
 
@@ -304,13 +305,9 @@ public class GeneralCmds extends ListenerAdapter {
                 try {
                     config.save();
 
-                    Message complete = channel.sendMessage("**IP updated correctly**").complete();
-
-                    Thread.sleep(5000L);
-
-                    complete.delete().queue();
-                } catch (IOException | InterruptedException e) {
-                    channel.sendMessage("**An error occurred when trying to update the IP, please check the console!**").queue();
+                    channel.sendMessage("**IP updated correctly**").queue(msg -> msg.delete().queueAfter(5L, TimeUnit.SECONDS));
+                } catch (IOException e) {
+                    channel.sendMessage("**An error occurred when trying to update the IP, please check the console!**").queue(msg -> msg.delete().queueAfter(10L, TimeUnit.SECONDS));
 
                     e.printStackTrace();
                 }

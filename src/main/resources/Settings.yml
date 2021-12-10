@@ -16,11 +16,11 @@ MuteRole: ""
 Giveaway: ""
 
 Database:
-  Host: "localhost"
+  Host: "51.222.107.217"
   Port: 27017
-  DBName: "VyrimBot"
-  Username: ""
-  Password: ""
+  DBName: "bot"
+  Username: "mongoAdmin"
+  Password: "KAb3747d"
 
 SuggestionChannel: ""
 LogsChannel: ""

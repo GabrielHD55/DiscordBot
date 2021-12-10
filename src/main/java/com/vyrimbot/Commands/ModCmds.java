@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class ModCmds extends ListenerAdapter {
 
@@ -132,19 +133,11 @@ public class ModCmds extends ListenerAdapter {
                 unbanMessage = unbanMessage.replaceAll("%admin-avatar%", member.getAsMention());
                 String finalUnbanMessage = unbanMessage;
 
-                event.getGuild().unban(target).queue(success -> channel.sendMessage(finalUnbanMessage).queue(), failure -> {
-                    Message msg = channel.sendMessage("**This user is not banned**").complete();
+                event.getGuild().unban(target).queue(success -> {
+                    Main.getInstance().getDatabase().unbanUser(target.getIdLong(), member);
 
-                    new Thread(() -> {
-                        try {
-                            Thread.sleep(10000L);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        msg.delete().queue();
-                    }).start();
-                });
+                    channel.sendMessage(finalUnbanMessage).queue();
+                }, failure -> channel.sendMessage("**This user is not banned**").queue(msg -> msg.delete().queueAfter(10L, TimeUnit.SECONDS)));
             }
             return;
         }
@@ -303,32 +296,10 @@ public class ModCmds extends ListenerAdapter {
                     embed.setImage(target.getAvatarUrl());
                     embed.setFooter(lang.getString("EmbedMessages.Kick.Footer.Name"), lang.getString("EmbedMessages.Kick.Footer.URL"));
 
-                    event.getGuild().kick(target, reason).queue(success -> channel.sendMessageEmbeds(embed.build()).queue(), failure -> {
-                        Message msg = channel.sendMessage("**This member could not be kicked**").complete();
-
-                        new Thread(() -> {
-                            try {
-                                Thread.sleep(5000L);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-
-                            msg.delete().queue();
-                        }).start();
-                    });
+                    event.getGuild().kick(target, reason).queue(success -> channel.sendMessageEmbeds(embed.build()).queue(), failure -> channel.sendMessage("**This member could not be kicked**").queue(msg -> msg.delete().queueAfter(5L, TimeUnit.SECONDS)));
                 }
             } else {
-                Message msg = channel.sendMessage("**This member does not exist!**").complete();
-
-                new Thread(() -> {
-                    try {
-                        Thread.sleep(5000L);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                    msg.delete().queue();
-                }).start();
+                channel.sendMessage("**This member does not exist!**").queue(msg -> msg.delete().queueAfter(5L, TimeUnit.SECONDS));
             }
         }
     }

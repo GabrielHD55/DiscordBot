@@ -1,21 +1,14 @@
 package com.vyrimbot.Managers;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-import org.simpleyaml.configuration.file.YamlFile;
-
 import com.vyrimbot.Main;
 import com.vyrimbot.ReactionRoles.ReactionRole;
-
 import lombok.Getter;
 import net.dv8tion.jda.api.entities.Emoji;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.simpleyaml.configuration.file.YamlFile;
+
+import java.util.*;
 
 public class ReactionRoleManager {
 
@@ -31,8 +24,8 @@ public class ReactionRoleManager {
 		for(String sec : section) {
 			String d = config.getString("ReactionRoles.Messages." + sec + ".Description");
 			
-			List<String> emojies = new ArrayList();
-        	List<Role> roles = new ArrayList();
+			List<String> emojies = new ArrayList<>();
+        	List<Role> roles = new ArrayList<>();
 			
 			channel.sendMessage(d).queue(m -> {
 				ReactionRole rr = new ReactionRole(m.getId(), roles, emojies);
@@ -46,14 +39,9 @@ public class ReactionRoleManager {
 	        		m.addReaction(Emoji.fromUnicode(split[0]).getName()).queue();
 				}
 			});
-			
-			
 		}
-		
-		
 	}
-	
-	
+
 	public void addReactionRole(String messageId, ReactionRole rr) {
 		reactionRoles.put(messageId, rr);
 	}
@@ -61,6 +49,4 @@ public class ReactionRoleManager {
 	public ReactionRole getReactionRole(String messageId) {
 		return reactionRoles.get(messageId);
 	}
-	
-	
 }

@@ -22,5 +22,4 @@ public class ReactionRole {
 	public Role getRoleFromEmoji(String emoji) {
 		return roles.get(emojies.indexOf(emoji));
 	}
-	
 }
