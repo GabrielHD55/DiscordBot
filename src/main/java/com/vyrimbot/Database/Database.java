@@ -8,6 +8,7 @@ import lombok.Getter;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import org.simpleyaml.configuration.file.YamlFile;
 
 import java.text.SimpleDateFormat;
@@ -27,18 +28,26 @@ public class Database {
         String password = config.getString("Database.Password");
         String port = config.getString("Database.Port");
 
-        mongoClient = new MongoClient(new MongoClientURI("mongodb://"+user+":"+password+"@"+host+":"+port+"/?authSource="+dbName));
+        mongoClient = new MongoClient(new MongoClientURI("mongodb://"+user+":"+password+"@"+host+":"+port+"/?authSource="+dbName+"&authMechanism=SCRAM-SHA-1"));
         database = mongoClient.getDB(config.getString("Database.DBName", "VyrimBot"));
 
-        if(database.getCollection("Bans") == null) database.createCollection("Bans", null);
-        if(database.getCollection("Invites") == null) database.createCollection("Invites", null);
-        if(database.getCollection("Tickets") == null) database.createCollection("Tickets", null);
-        if(database.getCollection("Infractions") == null) database.createCollection("Infractions", null);
+        if(!database.collectionExists("Bans")) database.createCollection("Bans", null);
+        if(!database.collectionExists("Invites")) database.createCollection("Invites", null);
+        if(!database.collectionExists("Tickets")) database.createCollection("Tickets", null);
+        if(!database.collectionExists("Infractions")) database.createCollection("Infractions", null);
 
-        loadTickets();
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            loadTickets();
+        }).start();
     }
 
-    public void saveInvite(Member member, String url) {
+    public void saveInvite(User member, String url) {
         DBCollection collection = database.getCollection("Invites");
         BasicDBObject query = new BasicDBObject();
         query.put("user", member.getIdLong());
@@ -52,7 +61,18 @@ public class Database {
         collection.update(query, updateObject);
     }
 
-    public String getInvite(Member member) {
+    public void createInvite(User user) {
+        if(!hasInvite(user)) {
+            DBCollection collection = database.getCollection("Invites");
+            BasicDBObject document = new BasicDBObject();
+            document.put("user", user.getIdLong());
+            document.put("url", "none");
+
+            collection.insert(document);
+        }
+    }
+
+    public String getInvite(User member) {
         DBCollection collection = database.getCollection("Invites");
 
         if(hasInvite(member)) {
@@ -63,21 +83,16 @@ public class Database {
             if (cursor.hasNext()) {
                 DBObject document = cursor.next();
 
-                return (String) document.get("url");
+                if(!String.valueOf(document.get("url")).equalsIgnoreCase("none")) {
+                    return (String) document.get("url");
+                }
             }
         }
-
-        BasicDBObject document = new BasicDBObject();
-        document.put("guild", member.getGuild().getIdLong());
-        document.put("user", member.getUser().getIdLong());
-        document.put("url", "none");
-
-        collection.insert(document);
 
         return null;
     }
 
-    public boolean hasInvite(Member member) {
+    public boolean hasInvite(User member) {
         DBCollection collection = database.getCollection("Invites");
         BasicDBObject searchQuery = new BasicDBObject();
         searchQuery.put("user", member.getIdLong());
@@ -116,6 +131,7 @@ public class Database {
         document.put("reason", reason);
 
         collection.insert(document);
+        collection.save(document);
     }
 
     public void saveTicket(Ticket ticket) {
@@ -127,6 +143,9 @@ public class Database {
         document.put("type", ticket.getType().name().toLowerCase());
 
         collection.insert(document);
+        collection.save(document);
+
+        Main.debug("DATABASE", "Ticket saved "+ticket.getMember().getEffectiveName());
     }
 
     public void deleteTicket(Ticket ticket) {
@@ -135,6 +154,8 @@ public class Database {
         searchQuery.put("owner", ticket.getMember().getIdLong());
 
         collection.remove(searchQuery);
+
+        Main.debug("DATABASE", "Ticket deleted "+ticket.getMember().getEffectiveName());
     }
 
     public void loadTickets() {
@@ -146,16 +167,21 @@ public class Database {
         while (cursor.hasNext()) {
             DBObject document = cursor.next();
 
-            Guild guild = Main.getInstance().getJda().getGuildById(Long.parseLong(String.valueOf(document.get("guild"))));
+            long guildId = Long.parseLong(String.valueOf(document.get("guild")));
+            long memberId = Long.parseLong(String.valueOf(document.get("owner")));
+            long channelId = Long.parseLong(String.valueOf(document.get("channel")));
+            String sType = String.valueOf(document.get("type"));
 
-            Member member = guild.getMemberById(Long.parseLong(String.valueOf(document.get("owner"))));
-            TextChannel textChannel = guild.getTextChannelById(Long.parseLong(String.valueOf(document.get("channel"))));
-            TicketType type = TicketType.getType(String.valueOf(document.get("type")));
+            Guild guild = Main.getInstance().getJda().getGuildById(guildId);
+            Member member = guild.getMemberById(memberId);
+            TextChannel textChannel = guild.getTextChannelById(channelId);
+            TicketType type = TicketType.getType(sType);
 
-            if(member != null && textChannel != null) {
+            if (member != null && textChannel != null) {
                 Main.getTicketManager().loadExistTicket(member, type, textChannel);
 
-                ticketsAmount++;
+                Main.debug("INFO", "Ticket loaded");
+                ticketsAmount += 1;
             }
         }
 

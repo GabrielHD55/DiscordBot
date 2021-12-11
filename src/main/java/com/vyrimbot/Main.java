@@ -3,10 +3,7 @@ package com.vyrimbot;
 import com.vyrimbot.Commands.GeneralCmds;
 import com.vyrimbot.Commands.ModCmds;
 import com.vyrimbot.Database.Database;
-import com.vyrimbot.Listeners.AntiBot;
-import com.vyrimbot.Listeners.GiveawayListener;
-import com.vyrimbot.Listeners.ReactionRoleListener;
-import com.vyrimbot.Listeners.TicketListener;
+import com.vyrimbot.Listeners.*;
 import com.vyrimbot.Managers.GiveawaysManager;
 import com.vyrimbot.Managers.LogsManager;
 import com.vyrimbot.Managers.ReactionRoleManager;
@@ -62,19 +59,17 @@ public class Main extends App {
             e.printStackTrace();
         }
 
-        ticketManager = new TicketManager();
-        giveawayManager = new GiveawaysManager();
-
         botName = config.getString("Settings.Name", "VyrimBot");
         prefix = config.getString("Settings.Prefix", "+");
 
         debug("INFO", "Starting "+botName+"...");
-
         connectBot();
-        database = new Database();
-        
+
+        ticketManager = new TicketManager();
+        giveawayManager = new GiveawaysManager();
         rrManager = new ReactionRoleManager();
-        //connectDatabase();
+
+        database = new Database();
     }
 
     public void connectBot() {
@@ -97,7 +92,7 @@ public class Main extends App {
             jdaBuilder.setChunkingFilter(ChunkingFilter.NONE);
             jdaBuilder.disableCache(CacheFlag.ACTIVITY);
             jdaBuilder.setRawEventsEnabled(true);
-            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener(), new ReactionRoleListener());
+            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener(), new ReactionRoleListener(), new InviteTracker());
 
             jda = jdaBuilder.build();
             jda.awaitReady();

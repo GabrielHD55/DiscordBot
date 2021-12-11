@@ -18,27 +18,31 @@ public class ReactionRoleManager {
 		YamlFile config = Main.getInstance().getConfig();
 		
 		Set<String> section = config.getConfigurationSection("ReactionRoles.Messages").getKeys(false);
-		
-		TextChannel channel = Main.getInstance().getJda().getTextChannelById(config.getString("ReactionRoles.ChannelID"));
-		
-		for(String sec : section) {
-			String d = config.getString("ReactionRoles.Messages." + sec + ".Description");
-			
-			List<String> emojies = new ArrayList<>();
-        	List<Role> roles = new ArrayList<>();
-			
-			channel.sendMessage(d).queue(m -> {
-				ReactionRole rr = new ReactionRole(m.getId(), roles, emojies);
-				
-				for(String s : config.getStringList("ReactionRoles.Messages." + sec + ".ReactionRoles")) {
-					String[] split = s.split(" ");
-	        		
-	        		emojies.add(Emoji.fromUnicode(split[0]).getName());
-	        		roles.add(channel.getGuild().getRoleById(split[1]));
-	        		
-	        		m.addReaction(Emoji.fromUnicode(split[0]).getName()).queue();
+
+		if(!config.getString("ReactionRoles.ChannelID").isEmpty()) {
+			TextChannel channel = Main.getInstance().getJda().getTextChannelById(config.getString("ReactionRoles.ChannelID"));
+
+			if (channel != null) {
+				for (String sec : section) {
+					String d = config.getString("ReactionRoles.Messages." + sec + ".Description");
+
+					List<String> emojies = new ArrayList<>();
+					List<Role> roles = new ArrayList<>();
+
+					channel.sendMessage(d).queue(m -> {
+						ReactionRole rr = new ReactionRole(m.getId(), roles, emojies);
+
+						for (String s : config.getStringList("ReactionRoles.Messages." + sec + ".ReactionRoles")) {
+							String[] split = s.split(" ");
+
+							emojies.add(Emoji.fromUnicode(split[0]).getName());
+							roles.add(channel.getGuild().getRoleById(split[1]));
+
+							m.addReaction(Emoji.fromUnicode(split[0]).getName()).queue();
+						}
+					});
 				}
-			});
+			}
 		}
 	}
 

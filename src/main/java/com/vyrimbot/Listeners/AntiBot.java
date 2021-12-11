@@ -89,6 +89,8 @@ public class AntiBot extends ListenerAdapter {
 
                         this.captchas.remove(user.getIdLong());
                         this.guild.remove(user.getIdLong());
+
+                        Main.getInstance().getDatabase().createInvite(user);
                     } else {
                         Main.debug("ERROR", "Default role is null");
                     }
