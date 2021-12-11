@@ -2,6 +2,7 @@ package com.vyrimbot.Database;
 
 import com.mongodb.*;
 import com.vyrimbot.Main;
+import com.vyrimbot.Giveaways.Giveaway;
 import com.vyrimbot.Tickets.Ticket;
 import com.vyrimbot.Tickets.TicketType;
 import lombok.Getter;
@@ -160,5 +161,40 @@ public class Database {
         }
 
         Main.debug("INFO", ticketsAmount+" tickets successfully uploaded");
+    }
+    
+    public void saveGiveaway(Giveaway giveaway) {
+    	DBCollection collection = database.getCollection("Giveaways");
+        
+    	BasicDBObject document = new BasicDBObject();
+    	
+    	document.put("messageID", giveaway.getMessageId());
+    	document.put("channelID", giveaway.getChannel().getId());
+    	document.put("args", giveaway.getSerializedArgs());
+    	
+    	collection.insert(document);
+    	
+    }
+    
+    public void loadGiveaways() {
+    	DBCollection collection = database.getCollection("Giveaways");
+        DBCursor cursor = collection.find();
+        
+        for(int i = 0; cursor.hasNext(); i++) {
+        	DBObject document = cursor.next();
+
+            TextChannel c = Main.getInstance().getJda().getTextChannelById(String.valueOf(document.get("channelID")));
+            
+            new Giveaway(String.valueOf(document.get("messageID")), c, String.valueOf(document.get("args")).split(" "));
+        }
+        
+    }
+    
+    public void deleteGiveaway(Giveaway giveaway) {
+    	DBCollection collection = database.getCollection("Tickets");
+        BasicDBObject searchQuery = new BasicDBObject();
+        searchQuery.put("messageID", giveaway.getMessageId());
+
+        collection.remove(searchQuery);
     }
 }

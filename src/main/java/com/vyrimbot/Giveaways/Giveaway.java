@@ -101,4 +101,12 @@ public class Giveaway {
 	public void removeUser(String u) {
 		users.remove(u);
 	}
+	
+	public String getSerializedArgs() {
+		String args = "";
+		for(String s : this.args) {
+			args = args + s + " ";
+		}
+		return args;
+	}
 }

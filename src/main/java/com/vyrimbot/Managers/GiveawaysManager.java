@@ -1,5 +1,6 @@
 package com.vyrimbot.Managers;
 
+import com.vyrimbot.Main;
 import com.vyrimbot.Giveaways.Giveaway;
 import lombok.Getter;
 
@@ -29,12 +30,16 @@ public class GiveawaysManager {
 		timer.schedule(task, Duration.between(LocalDateTime.now(), giveaway.getExpirationDate()).toMillis());
 		
 		tasks.put(giveaway.getMessageId(), task);
+		
+		Main.getInstance().getDatabase().saveGiveaway(giveaway);
 	}
 	
 	public void removeGiveaway(Giveaway giveaway) {
 		giveaways.remove(giveaway.getMessageId(), giveaway);
 		
 		tasks.get(giveaway.getMessageId()).cancel();
+		
+		Main.getInstance().getDatabase().deleteGiveaway(giveaway);
 	}
 	
 	public Giveaway getGiveaway(String messageId) 
