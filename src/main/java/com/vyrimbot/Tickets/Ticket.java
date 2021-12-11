@@ -83,6 +83,7 @@ public class Ticket {
             this.textChannel.sendMessage(member.getAsMention()).queue();
             this.textChannel.sendMessage(instrutions.build()).setActionRow(Button.danger("closeticket", "\uD83D\uDD12 Close ticket")).queue();
 
+            Main.getInstance().getDatabase().saveTicket(this);
         }
     }
 

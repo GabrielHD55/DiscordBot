@@ -9,6 +9,15 @@ GiveawayNoExist: "There are no giveaways."
 GiveawayList: "%id% %title% %prize% %winners% Winners, Expires on: %expiration-date%"
 
 EmbedMessages:
+  Invite:
+    Title: "%user% **Invite link**"
+    Color: "RED"
+    Description:
+      - "Hey %user-avatar%! this is your invitation link:"
+      - "%link%"
+    Footer:
+      Name: ""
+      URL: ""
   Captcha:
     Title: "**Complete the captcha**"
     Color: "RED"
