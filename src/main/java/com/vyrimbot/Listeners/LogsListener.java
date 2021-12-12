@@ -2,6 +2,7 @@ package com.vyrimbot.Listeners;
 
 import org.jetbrains.annotations.NotNull;
 
+import com.vyrimbot.Main;
 import com.vyrimbot.Logs.Log;
 import com.vyrimbot.Logs.LogType;
 
@@ -19,12 +20,14 @@ public class LogsListener extends ListenerAdapter {
 
 	@Override
 	public void onGuildMessageEmbed(GuildMessageEmbedEvent e) {
+		if(e.getChannel() == Main.getLogsManager().getChannelP() || e.getChannel() == Main.getLogsManager().getChannelR()) return;
 		new Log(LogType.Root, "New Message " + e.getMessageId() + " in channel " + e.getChannel().getName());
 		return;
 	}
 	
 	@Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
+		if(event.getChannel() == Main.getLogsManager().getChannelP() || event.getChannel() == Main.getLogsManager().getChannelR()) return;
 		new Log(LogType.Root, "User has sent a message: " + event.getMessageId() + ", in channel " + event.getChannel().getName());
 		return;
 	}

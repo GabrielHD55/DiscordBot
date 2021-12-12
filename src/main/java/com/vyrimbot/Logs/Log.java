@@ -8,9 +8,7 @@ import org.simpleyaml.configuration.file.YamlFile;
 import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 public class Log {
 	
@@ -22,15 +20,19 @@ public class Log {
 		this.message = message;
 		
 		
-		createLog();
+		
+		if(Main.getLogsManager().getChannelR() != null && Main.getLogsManager().getChannelP() != null) {
+			createLog();
+		}
+		else {
+			System.out.println("Log channels have been not set!!!");
+			Main.getLogsManager().setChannels();
+		}
 		
 	}
 	
 	void createLog() {
 		YamlFile config = Main.getInstance().getConfig();
-		
-		TextChannel channelP = Main.getInstance().getJda().getTextChannelById(config.getString("LogsChannelP"));
-		TextChannel channelR = Main.getInstance().getJda().getTextChannelById(config.getString("LogsChannelR"));
 		
 		EmbedBuilder embed = EmbedUtil.getEmbed();
         embed.setTitle("**");
@@ -38,11 +40,11 @@ public class Log {
         embed.addField("", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), false);
         
         if(type == LogType.Root) {
-        	channelR.sendMessageEmbeds(embed.build()).queue();
+        	Main.getLogsManager().getChannelR().sendMessageEmbeds(embed.build()).queue();
         	return;
         }
         
-        channelP.sendMessageEmbeds(embed.build()).queue();
+        Main.getLogsManager().getChannelP().sendMessageEmbeds(embed.build()).queue();
     	return;
       
 	}
