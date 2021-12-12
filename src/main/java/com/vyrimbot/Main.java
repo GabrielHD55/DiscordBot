@@ -68,6 +68,7 @@ public class Main extends App {
         ticketManager = new TicketManager();
         giveawayManager = new GiveawaysManager();
         rrManager = new ReactionRoleManager();
+        logsManager = new LogsManager();
 
         database = new Database();
     }
@@ -92,7 +93,7 @@ public class Main extends App {
             jdaBuilder.setChunkingFilter(ChunkingFilter.NONE);
             jdaBuilder.disableCache(CacheFlag.ACTIVITY);
             jdaBuilder.setRawEventsEnabled(true);
-            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener(), new ReactionRoleListener(), new InviteTracker());
+            jdaBuilder.addEventListeners(new AntiBot(), new GeneralCmds(), new ModCmds(), new TicketListener(), new GiveawayListener(), new ReactionRoleListener(), new InviteTracker(), new LogsListener());
 
             jda = jdaBuilder.build();
             jda.awaitReady();
