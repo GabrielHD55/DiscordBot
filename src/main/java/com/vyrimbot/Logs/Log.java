@@ -22,6 +22,7 @@ public class Log {
 		}
 		else {
 			System.out.println("Log channels have been not set!!!");
+			Main.getLogsManager().setChannels();
 		}
 		
 	}

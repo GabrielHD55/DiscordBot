@@ -14,11 +14,15 @@ import org.simpleyaml.configuration.file.YamlFile;
 
 public class LogsManager {
 
-    @Getter private final TextChannel channelP;
-    @Getter private final TextChannel channelR;
+    @Getter private TextChannel channelP;
+    @Getter private TextChannel channelR;
 
     public LogsManager() {
-        YamlFile config = Main.getInstance().getConfig();
+        setChannels();
+    }
+    
+    public void setChannels() {
+    	YamlFile config = Main.getInstance().getConfig();
 
         this.channelP = Main.getInstance().getJda().getTextChannelById(config.getLong("LogsChannelP"));
         this.channelR = Main.getInstance().getJda().getTextChannelById(config.getLong("LogsChannelR"));
