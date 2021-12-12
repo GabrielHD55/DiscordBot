@@ -37,7 +37,6 @@ public class Log {
 		EmbedBuilder embed = EmbedUtil.getEmbed();
         embed.setTitle("**");
         embed.setDescription(message);
-        embed.addField("", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), false);
         
         if(type == LogType.Root) {
         	Main.getLogsManager().getChannelR().sendMessageEmbeds(embed.build()).queue();

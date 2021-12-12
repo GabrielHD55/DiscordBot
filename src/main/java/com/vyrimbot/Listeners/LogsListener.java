@@ -28,13 +28,13 @@ public class LogsListener extends ListenerAdapter {
 	@Override
     public void onGuildMessageReceived(@NotNull GuildMessageReceivedEvent event) {
 		if(event.getChannel() == Main.getLogsManager().getChannelP() || event.getChannel() == Main.getLogsManager().getChannelR()) return;
-		new Log(LogType.Root, "User has sent a message: " + event.getMessageId() + ", in channel " + event.getChannel().getName());
+		new Log(LogType.Root, "User "+ event.getAuthor().getAsMention() +" has sent a message: " + event.getMessageId() + ", in channel " + event.getChannel().getName());
 		return;
 	}
 	
 	@Override
     public void onGuildMessageUpdate(@NotNull GuildMessageUpdateEvent event) {
-		new Log(LogType.Root, "User has updated a message: " + event.getMessageId() + ", in channel " + event.getChannel().getName());
+		new Log(LogType.Root, "User "+ event.getAuthor().getAsMention() +" has updated a message: " + event.getMessageId() + ", in channel " + event.getChannel().getName());
 		return;
 	}
 	

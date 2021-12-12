@@ -163,7 +163,7 @@ public class GeneralCmds extends ListenerAdapter {
         	List<String> emojies = new ArrayList<>();
         	List<Role> roles = new ArrayList<>();
         	
-        	event.getChannel().sendMessage(d).queue(current -> {
+        	Main.getInstance().getJda().getTextChannelById(config.getString("ReactionRoles.ChannelID")).sendMessage(d).queue(current -> {
         		
         		for(String s : args) {
             		String[] split = s.split(" ");
