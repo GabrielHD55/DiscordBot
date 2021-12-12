@@ -34,6 +34,88 @@ public class GeneralCmds extends ListenerAdapter {
         YamlFile config = Main.getInstance().getConfig();
         YamlFile lang = Main.getInstance().getLang();
 
+        if(message.startsWith(Main.getPrefix()+"editsuggestion")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+
+        	String[] args = StringUtils.substringsBetween(message, " \"", "\"");
+        	TextChannel c = event.getGuild().getTextChannelById(config.getString("SuggestionChannel"));
+
+        	if(args == null || args.length < 2) {
+        		event.getChannel().sendMessage("To edit your suggestion, type "+Main.getPrefix()+"editsuggestion [\"ID\"] [\"suggestion\"]").queue();
+        		return;
+        	}
+
+
+        	c.retrieveMessageById(args[0]).queue(m -> {
+
+        		MessageEmbed me = m.getEmbeds().toArray(new MessageEmbed[1])[0];
+        		if(EmbedUtil.getSuggestionAuthor(me.getTitle()).equalsIgnoreCase(event.getAuthor().getAsTag())) {
+
+        			EmbedBuilder e = EmbedUtil.getEmbed(event.getAuthor());
+
+        			e.setTitle(me.getTitle());
+        			e.setDescription(args[1]);
+        			e.setColor(Color.getColor(lang.getString("EmbedMessages.Suggestion.Color", "BLUE")));
+
+        			c.editMessageEmbedsById(args[0], e.build()).queue();
+        			event.getChannel().sendMessage("Succesfully edited! " + m.getJumpUrl()).queue();
+        			return;
+
+        		}else {
+        			event.getChannel().sendMessage("You can't edit this suggestion").queue();
+        			return;
+        		}
+        	}, failure -> {
+        		event.getChannel().sendMessage("Suggestion doesn't found").queue();
+    			return;
+        	});
+        	return;
+        }
+
+        if(message.startsWith(Main.getPrefix()+"setsuggest")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+
+        	config.set("SuggestionChannel", event.getChannel().getId());
+        	event.getChannel().sendMessage("Setting suggest channel").queue();
+        	return;
+        }
+        if(message.startsWith(Main.getPrefix()+"suggest")) {
+        	event.getChannel().deleteMessageById(event.getMessageId()).queue();
+
+        	if(config.getString("SuggestionChannel") == null) {
+        		event.getChannel().sendMessage("Suggest channel doesn't exist").queue();
+        		return;
+        	}
+
+        	TextChannel c = event.getGuild().getTextChannelById(config.getString("SuggestionChannel"));
+        	String arg = StringUtils.substringBetween(message, " \"", "\"");
+
+        	if(c == null) {
+        		event.getChannel().sendMessage("Suggest channel doesn't exist").queue();
+        		return;
+        	}
+
+        	if(arg == null) {
+        		event.getChannel().sendMessage("To suggest, type "+Main.getPrefix()+"suggest [\"suggestion\"]").queue();
+                return;
+        	}
+
+        	EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
+
+        	embed.setColor(Color.getColor(lang.getString("EmbedMessages.Suggestion.Color", "BLUE")));
+            embed.setDescription(arg);
+
+            Message m = c.sendMessageEmbeds(embed.build()).complete();
+
+            embed.setTitle(EmbedUtil.getSuggestionTitle(event.getAuthor().getAsTag(), m.getId()));
+            c.editMessageEmbedsById(m.getId(), embed.build()).queue();
+
+            m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Suggestion.Options.LikeEmote")).getName()).queue();
+            m.addReaction(Emoji.fromUnicode(lang.getString("EmbedMessages.Suggestion.Options.DislikeEmote")).getName()).queue();
+
+            return;
+        }
+        
         if(message.startsWith(Main.getPrefix()+"gstart")) {
             event.getChannel().deleteMessageById(event.getMessageId()).queue();
 
@@ -124,7 +206,7 @@ public class GeneralCmds extends ListenerAdapter {
             	return;
             }
         	
-        	if(args.length == 0) {
+        	if(args == null || args.length == 0) {
         		event.getChannel().sendMessage("To ends a giveaway, type "+Main.getPrefix()+"gend [messageId]").queue();
         		return;
         	}
