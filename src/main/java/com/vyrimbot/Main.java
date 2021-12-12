@@ -5,7 +5,6 @@ import com.vyrimbot.Commands.ModCmds;
 import com.vyrimbot.Database.Database;
 import com.vyrimbot.Listeners.*;
 import com.vyrimbot.Managers.GiveawaysManager;
-import com.vyrimbot.Managers.LogsManager;
 import com.vyrimbot.Managers.ReactionRoleManager;
 import com.vyrimbot.Managers.TicketManager;
 import com.vyrimbot.Utils.ConfigCreator;
@@ -38,7 +37,6 @@ public class Main extends App {
     @Getter private YamlFile tickets;
     @Getter private Database database;
 
-    @Getter private static LogsManager logsManager;
     @Getter private static TicketManager ticketManager;
     @Getter private static GiveawaysManager giveawayManager;
     @Getter private static ReactionRoleManager rrManager;
@@ -68,7 +66,6 @@ public class Main extends App {
         ticketManager = new TicketManager();
         giveawayManager = new GiveawaysManager();
         rrManager = new ReactionRoleManager();
-        logsManager = new LogsManager();
 
         database = new Database();
     }
