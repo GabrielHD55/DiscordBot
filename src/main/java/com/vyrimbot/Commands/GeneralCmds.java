@@ -144,7 +144,7 @@ public class GeneralCmds extends ListenerAdapter {
 
             String[] args = StringUtils.substringsBetween(message, " \"", "\"");
 
-            String[] deffaultReactions = new String[] {"1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"};
+            String[] deffaultReactions = new String[] {"1ï¸�âƒ£","2ï¸�âƒ£","3ï¸�âƒ£","4ï¸�âƒ£","5ï¸�âƒ£","6ï¸�âƒ£","7ï¸�âƒ£","8ï¸�âƒ£","9ï¸�âƒ£","ðŸ”Ÿ"};
 
             EmbedBuilder embed = EmbedUtil.getEmbed(event.getAuthor());
 

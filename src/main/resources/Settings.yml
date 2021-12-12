@@ -11,9 +11,15 @@ Activity:
   Name: ""
   URL: ""
 
+# Roles
 DefaultRole: ""
 MuteRole: ""
 Giveaway: ""
+
+# Channels
+SuggestionChannel: ""
+LogsChannelR: ""
+LogsChannelP: ""
 
 Database:
   Host: "51.222.107.217"
@@ -21,9 +27,6 @@ Database:
   DBName: "bot"
   Username: "mongoAdmin"
   Password: "KAb3747d"
-
-SuggestionChannel: ""
-LogsChannel: ""
 
 ReactionRoles:
   ChannelID: ""
