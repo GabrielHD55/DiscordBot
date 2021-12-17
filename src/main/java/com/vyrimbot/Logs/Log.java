@@ -1,10 +1,5 @@
 package com.vyrimbot.Logs;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import org.simpleyaml.configuration.file.YamlFile;
-
 import com.vyrimbot.Main;
 import com.vyrimbot.Utils.EmbedUtil;
 
@@ -14,10 +9,12 @@ public class Log {
 	
 	LogType type;
 	String message;
+	String title;
 	
-	public Log(LogType type, String message) {
+	public Log(LogType type, String message, String title) {
 		this.type = type;
 		this.message = message;
+		this.title = title;
 		
 		
 		
@@ -32,10 +29,8 @@ public class Log {
 	}
 	
 	void createLog() {
-		YamlFile config = Main.getInstance().getConfig();
-		
 		EmbedBuilder embed = EmbedUtil.getEmbed();
-        embed.setTitle("**");
+        embed.setTitle(title);
         embed.setDescription(message);
         
         if(type == LogType.Root) {
